@@ -33,6 +33,12 @@ export default class SkillSelector extends React.PureComponent {
       move: [0],
       rate: 2.0,
     },
+    {
+      id: 5,
+      name: '3倍',
+      move: [0],
+      rate: 3.0
+    },
   ];
 
   renderRadios() {
