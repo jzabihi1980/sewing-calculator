@@ -3,6 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 import Board from './board';
 import DamageSelector from './damage_selector';
+import SkillSelector from './skill_selector';
 
 class App extends Component {
 
@@ -49,6 +50,7 @@ class App extends Component {
           damages={[12, 13, 14, 15, 16, 17, 18]}
           damage={this.state.damage}
           onChange={(event) => this.handleDamageSelectorChange(event)} />
+        <SkillSelector />
       </div>
     );
   }
