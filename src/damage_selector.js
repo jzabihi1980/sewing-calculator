@@ -6,7 +6,9 @@ export default class DamageSelector extends React.Component {
     const damages = this.props.damages.slice(0);
     const options = [];
     for (let damage of damages) {
-      options.push(<option key={damage.toString()} value={damage}>{damage}</option>);
+      options.push(
+        <option key={damage.toString()} value={damage}>{damage}</option>
+      );
     }
     return options;
   }

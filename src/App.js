@@ -4,6 +4,7 @@ import './App.css';
 import Board from './board';
 import DamageSelector from './damage_selector';
 import SkillSelector from './skill_selector';
+import SC from './sewing_calculator';
 
 class App extends Component {
 
@@ -49,7 +50,29 @@ class App extends Component {
         },
       ],
       hitpoints: [18, 21, 18, 18, 21, 18, 18, 21, 18],
-      powers: [],
+      powers: [
+        {
+          display: "弱い",
+          rate: 0.5,
+        },
+        {
+          display: "普通",
+          rate: 1.0,
+        },
+        {
+          display: "強い",
+          rate: 1.5,
+        },
+        {
+          display: "最強",
+          rate: 2.0,
+        },
+        {
+          display: "会心",
+          rate: 1.0,
+        },
+      ],
+      power: 0,
       skill: '',
     };
   }
@@ -58,7 +81,7 @@ class App extends Component {
     console.log(`${index}: ${damage}`);
     const hitpoints = this.state.hitpoints.slice(0);
 
-    hitpoints[index] -= damage;
+    hitpoints[index] -= this.state.damage;
     this.setState(
       {
         hitpoints: hitpoints,
@@ -92,7 +115,7 @@ class App extends Component {
         </div>
         <Board
           hitpoints={this.state.hitpoints}
-          onClick={(i, d) => this.handleClickSquare(i, d)} />
+          onClick={(i) => this.handleClickSquare(i)} />
         <DamageSelector
           damages={[12, 13, 14, 15, 16, 17, 18]}
           damage={this.state.damage}
