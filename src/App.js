@@ -10,12 +10,51 @@ class App extends Component {
   constructor() {
     super();
     this.state = {
-//      hitpoints: Array(9).fill(null),
+      skills: [
+        {
+          id: 0,
+          name: '滝', 
+          move: [0, 3],
+          rate: 1.0,
+        },
+        {
+          id: 1,
+          name: '横',
+          move: [0, 1],
+          rate: 1.0,
+        },
+        {
+          id: 2,
+          name: '大滝',
+          move:[0, 3, 6],
+          rate: 1.0,
+        },
+        {
+          id: 3,
+          name: '水平',
+          move: [0, 1, 2],
+          rate: 1.0,
+        },
+        {
+          id: 4,
+          name: '2倍',
+          move: [0],
+          rate: 2.0,
+        },
+        {
+          id: 5,
+          name: '3倍',
+          move: [0],
+          rate: 3.0
+        },
+      ],
       hitpoints: [18, 21, 18, 18, 21, 18, 18, 21, 18],
+      powers: [],
+      skill: '',
     };
   }
 
-  handleClick(index, damage) {
+  handleClickSquare(index, damage) {
     console.log(`${index}: ${damage}`);
     const hitpoints = this.state.hitpoints.slice(0);
 
@@ -27,13 +66,21 @@ class App extends Component {
     )
   }
 
-  handleDamageSelectorChange(event) {
+  handleChangeDamage(event) {
     console.log(event.target.value);
     this.setState(
       {
         damage: event.target.value,
       }
     );
+  }
+
+  handleChangeSkill(event) {
+    this.setState(
+      {
+        skill: event.target.value,
+      }
+    )
   }
 
   render() {
@@ -45,12 +92,15 @@ class App extends Component {
         </div>
         <Board
           hitpoints={this.state.hitpoints}
-          onClick={(i, d) => this.handleClick(i, d)} />
+          onClick={(i, d) => this.handleClickSquare(i, d)} />
         <DamageSelector
           damages={[12, 13, 14, 15, 16, 17, 18]}
           damage={this.state.damage}
-          onChange={(event) => this.handleDamageSelectorChange(event)} />
-        <SkillSelector />
+          onChange={(event) => this.handleChangeDamage(event)} />
+        <SkillSelector
+          skills={this.state.skills}
+          skill={this.state.skill}
+          onChange={(event) => this.handleChangeSkill(event)} />
       </div>
     );
   }
