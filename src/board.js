@@ -5,9 +5,10 @@ export default class Board extends React.PureComponent {
 
   renderSquare(i) {
     const hitpoints = this.props.hitpoints.slice(0);
-
     return (
-      <button value={hitpoints[i]} onClick={() => this.props.onClick(i)}>{hitpoints[i]}</button>
+      <button
+        value={hitpoints[i]}
+        onClick={() => this.props.onClick(i)}>{hitpoints[i]}</button>
     );
   }
 
