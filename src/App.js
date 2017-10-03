@@ -5,52 +5,55 @@ import Board from './board';
 import DamageSelector from './damage_selector';
 import SkillSelector from './skill_selector';
 import PowerSelector from './power_selector';
-//import SC from './sewing_calculator';
 
 class App extends Component {
 
   constructor() {
     super();
+    this.baseDamages = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
+      damage: undefined,
+      damages: this.baseDamages,
+      skill: 0,
       skills: [
         {
-          id: 0,
-          name: '滝', 
+          display: '縫う',
+          move: [0],
+          rate: 1.0,
+        },
+        {
+          display: '滝', 
           move: [0, 3],
           rate: 1.0,
         },
         {
-          id: 1,
-          name: '横',
+          display: '横',
           move: [0, 1],
           rate: 1.0,
         },
         {
-          id: 2,
-          name: '大滝',
+          display: '大滝',
           move:[0, 3, 6],
           rate: 1.0,
         },
         {
-          id: 3,
-          name: '水平',
+          display: '水平',
           move: [0, 1, 2],
           rate: 1.0,
         },
         {
-          id: 4,
-          name: '2倍',
+          display: '2倍',
           move: [0],
           rate: 2.0,
         },
         {
-          id: 5,
-          name: '3倍',
+          display: '3倍',
           move: [0],
           rate: 3.0
         },
       ],
       hitpoints: [18, 21, 18, 18, 21, 18, 18, 21, 18],
+      power: 1,
       powers: [
         {
           display: "弱い",
@@ -69,9 +72,6 @@ class App extends Component {
           rate: 2.0,
         },
       ],
-      power: 0,
-      skill: '',
-      damage: '',
     };
   }
 
@@ -96,10 +96,23 @@ class App extends Component {
     );
   }
 
+  calculateDamages(skillRate, powerRate) {
+    return (
+      this.baseDamages.map(
+        (damage) => Math.ceil(damage * skillRate * powerRate)
+      ).filter(
+      (v, i, self) => self.indexOf(v) === i
+      )
+    );
+  }
+
   handleChangeSkill(event) {
     this.setState(
       {
-        skill: event.target.value,
+        skill: Number.parseInt(event.target.value, 10),
+        damages: this.calculateDamages(
+          this.state.skills[event.target.value].rate,
+          this.state.powers[this.state.power].rate),
       }
     );
   }
@@ -108,6 +121,9 @@ class App extends Component {
     this.setState(
       {
         power: event.target.value,
+        damages: this.calculateDamages(
+          this.state.skills[this.state.skill].rate,
+          this.state.powers[event.target.value].rate),
       }
     );
   }
@@ -123,7 +139,7 @@ class App extends Component {
           hitpoints={this.state.hitpoints}
           onClick={(i) => this.handleClickSquare(i)} />
         <DamageSelector
-          damages={[12, 13, 14, 15, 16, 17, 18]}
+          damages={this.state.damages}
           damage={this.state.damage}
           onChange={(event) => this.handleChangeDamage(event)} />
         <SkillSelector

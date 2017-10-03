@@ -7,7 +7,7 @@ export default class PowerSelector extends React.PureComponent {
     const options = [];
     for (let i = 0; i < powers.length; i++) {
       options.push(
-        <option value={powers[i].rate}>{powers[i].display}</option>
+        <option key={i} value={i}>{powers[i].display}</option>
        );
     }
     return options;
