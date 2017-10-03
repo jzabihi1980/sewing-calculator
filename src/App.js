@@ -51,6 +51,11 @@ class App extends Component {
           move: [0],
           rate: 3.0
         },
+        {
+          display: 'ほぐし',
+          move: [0],
+          rate: -0.5,
+        }
       ],
       hitpoints: [18, 21, 18, 18, 21, 18, 18, 21, 18],
       power: 1,
