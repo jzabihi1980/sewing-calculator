@@ -4,7 +4,8 @@ import './App.css';
 import Board from './board';
 import DamageSelector from './damage_selector';
 import SkillSelector from './skill_selector';
-import SC from './sewing_calculator';
+import PowerSelector from './power_selector';
+//import SC from './sewing_calculator';
 
 class App extends Component {
 
@@ -67,13 +68,10 @@ class App extends Component {
           display: "最強",
           rate: 2.0,
         },
-        {
-          display: "会心",
-          rate: 1.0,
-        },
       ],
       power: 0,
       skill: '',
+      damage: '',
     };
   }
 
@@ -103,7 +101,15 @@ class App extends Component {
       {
         skill: event.target.value,
       }
-    )
+    );
+  }
+
+  handleChangePower(event) {
+    this.setState(
+      {
+        power: event.target.value,
+      }
+    );
   }
 
   render() {
@@ -124,6 +130,10 @@ class App extends Component {
           skills={this.state.skills}
           skill={this.state.skill}
           onChange={(event) => this.handleChangeSkill(event)} />
+        <PowerSelector
+          powers={this.state.powers}
+          power={this.state.power}
+          onChange={(event) => this.handleChangePower(event)} />
       </div>
     );
   }
