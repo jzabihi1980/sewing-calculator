@@ -22,3 +22,16 @@
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
+.board button {
+  margin: 1px;
+  width: 60px;
+  height: 60px;
+  font-size: 25px;
+  border: solid 1px #888;
+  background-color: #fff;
+}
+
+.board button:hover {
+  background-color: #fbb;
+}
