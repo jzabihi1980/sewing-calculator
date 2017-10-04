@@ -12,49 +12,108 @@ class App extends Component {
     super();
     this.baseDamages = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
-      damage: 999,
+      damage: 0,
       damages: this.baseDamages,
       skill: 0,
       skills: [
         {
           display: '縫う',
-          move: [0],
           rate: 1.0,
+          move: {
+            x: 0,
+            y: 0,
+            count: 1,
+          },
         },
         {
           display: '滝', 
-          move: [0, 3],
           rate: 1.0,
+          move: {
+            x: 0,
+            y: 1,
+            count: 2,
+          },
         },
         {
           display: '横',
-          move: [0, 1],
           rate: 1.0,
+          move: {
+            x: 1,
+            y: 0,
+            count: 2,
+          },
         },
         {
           display: '大滝',
-          move:[0, 3, 6],
           rate: 1.0,
+          move: {
+            x: 0,
+            y: 1,
+            count: 3,
+          },
         },
         {
           display: '水平',
-          move: [0, 1, 2],
           rate: 1.0,
+          move: {
+            x: 1,
+            y: 0,
+            count: 3,
+          },
+        },
+        {
+          display: 'たすき',
+          rate: 1.0,
+          move: {
+            x: 1,
+            y: 1,
+            count: 2,
+          },
+        },
+        {
+          display: '逆たすき',
+          rate: 1.0,
+          move: {
+            x: -1,
+            y: 1,
+            count: 2,
+          },
         },
         {
           display: '2倍',
-          move: [0],
           rate: 2.0,
+          move: {
+            x: 0,
+            y: 0,
+            count: 1,
+          },
         },
         {
           display: '3倍',
-          move: [0],
-          rate: 3.0
+          rate: 3.0,
+          move: {
+            x: 0,
+            y: 0,
+            count: 1,
+          },
+        },
+        {
+          display: 'かげん',
+          rate: 0.5,
+          move: {
+            x: 0,
+            y: 0,
+            count: 1,
+          },
         },
         {
           display: 'ほぐし',
-          move: [0],
           rate: -0.5,
+          move: {
+            x: 0,
+            y: 0,
+            count: 1,
+          },
         }
       ],
       hitpoints: [
@@ -84,7 +143,31 @@ class App extends Component {
     };
   }
 
+  isValidSquare(x, y) {
+    const skill = this.state.skills[this.state.skill];
+
+    // calculate position that most far square.
+    const moveX = x + (skill.move.x * (skill.move.count - 1));
+    const moveY = y + (skill.move.y * (skill.move.count - 1));
+
+    console.log(skill.display);
+    console.log(`x: ${x} y: ${y}`);
+    console.log(`most far X: ${moveX} y: ${moveY}`);
+
+    return (
+      moveX >= 0 && moveY >= 0 &&
+      moveX < this.state.hitpoints.length &&
+      moveY < this.state.hitpoints[moveX].length
+    );
+  }
+
   handleClickSquare(x, y) {
+    if (!this.isValidSquare(x, y)) {
+      console.log(`square position is invalid.`);
+      return;
+    }
+    console.log(`square position is valid.`);
+
     console.log(
       `pos: ${x}, ${y} ` +
       `power: ${this.state.powers[this.state.power].display} ` +
