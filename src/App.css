@@ -35,3 +35,8 @@
 .board button:hover {
   background-color: #fbb;
 }
+
+#damage_selector {
+  position: absolute;
+  display: none;
+}

@@ -17,7 +17,7 @@ export default class DamageSelector extends React.Component {
 
   render() {
     return (
-      <div>
+      <div id="damage_selector">
         <select value={this.props.damage} onChange={this.props.onChange} size="7">
         {
           this.renderOptions()
