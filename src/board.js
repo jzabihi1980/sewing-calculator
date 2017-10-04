@@ -5,9 +5,15 @@ export default class Board extends React.PureComponent {
 
   renderSquare(i) {
     const hitpoints = this.props.hitpoints.slice(0);
+    const style = {
+      backgroundColor:
+        (hitpoints[i] === 0) ? '#8f8':
+        (hitpoints[i] <= 4 && hitpoints[i] >= -4) ? '#ff8' : '#fff',
+    };
     return (
       <button
         value={hitpoints[i]}
+        style={style}
         onClick={() => this.props.onClick(i)}>{hitpoints[i]}</button>
     );
   }
