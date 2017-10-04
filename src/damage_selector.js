@@ -5,9 +5,11 @@ export default class DamageSelector extends React.Component {
   renderOptions() {
     const damages = this.props.damages.slice(0);
     const options = [];
-    for (let damage of damages) {
+    for (let i = 0; i < damages.length; i++) {
       options.push(
-        <option key={damage.toString()} value={damage}>{damage}</option>
+        <option
+          key={i}
+          value={damages[i]}>{damages[i]}</option>
       );
     }
     return options;
