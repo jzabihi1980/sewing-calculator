@@ -161,6 +161,13 @@ class App extends Component {
     );
   }
 
+  handleOverSquare(event, x, y) {
+    const bgColor = (this.isValidSquare(x, y)) ? '#88f' : '#f88';
+    event.target.style = {
+      backgroundColor: bgColor,
+    };
+  }
+
   handleClickSquare(x, y) {
     if (!this.isValidSquare(x, y)) {
       console.log(`square position is invalid.`);
@@ -233,7 +240,8 @@ class App extends Component {
         </div>
         <Board
           hitpoints={this.state.hitpoints}
-          onClick={(x, y) => this.handleClickSquare(x, y)} />
+          onClick={(x, y) => this.handleClickSquare(x, y)} 
+          onMouseOver={(event, x, y) => this.handleOverSquare(event, x, y)} />
         <DamageSelector
           damages={this.state.damages}
           damage={this.state.damage}

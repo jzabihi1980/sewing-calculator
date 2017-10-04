@@ -15,7 +15,8 @@ export default class Board extends React.PureComponent {
       <button
         value={hitpoints[x][y]}
         style={style}
-        onClick={() => this.props.onClick(x, y)}>{hitpoints[x][y]}</button>
+        onClick={() => this.props.onClick(x, y)}
+        onMouseOver={(event) => this.props.onMouseOver(event, x, y)} >{hitpoints[x][y]}</button>
     );
   }
 
