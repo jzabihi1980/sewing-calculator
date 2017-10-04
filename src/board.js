@@ -10,6 +10,7 @@ export default class Board extends React.PureComponent {
         (hitpoints[x][y] === 0) ? '#8f8':
         (hitpoints[x][y] <= 4 && hitpoints[x][y] >= -4) ? '#ff8' : '#fff',
     };
+
     return (
       <button
         value={hitpoints[x][y]}

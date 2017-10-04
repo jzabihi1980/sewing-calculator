@@ -33,7 +33,7 @@
 }
 
 .board button:hover {
-  background-color: #fbb;
+  border-color: #fbb;
 }
 
 #damage_selector {
