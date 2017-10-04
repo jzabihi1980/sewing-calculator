@@ -12,7 +12,7 @@ class App extends Component {
     super();
     this.baseDamages = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
-      damage: undefined,
+      damage: 999,
       damages: this.baseDamages,
       skill: 0,
       skills: [
@@ -57,7 +57,11 @@ class App extends Component {
           rate: -0.5,
         }
       ],
-      hitpoints: [18, 21, 18, 18, 21, 18, 18, 21, 18],
+      hitpoints: [
+        [18, 21, 18],
+        [21, 22, 23],
+        [18, 19, 20],
+      ],
       power: 1,
       powers: [
         {
@@ -80,11 +84,15 @@ class App extends Component {
     };
   }
 
-  handleClickSquare(index, damage) {
-    console.log(`${index}: ${damage}`);
+  handleClickSquare(x, y) {
+    console.log(
+      `pos: ${x}, ${y} ` +
+      `power: ${this.state.powers[this.state.power].display} ` +
+      `skill: ${this.state.skills[this.state.skill].display} ` +
+      `damage: ${this.state.damage}`);
     const hitpoints = this.state.hitpoints.slice(0);
 
-    hitpoints[index] -= this.state.damage;
+    hitpoints[x][y] -= this.state.damage;
     this.setState(
       {
         hitpoints: hitpoints,
@@ -142,7 +150,7 @@ class App extends Component {
         </div>
         <Board
           hitpoints={this.state.hitpoints}
-          onClick={(i) => this.handleClickSquare(i)} />
+          onClick={(x, y) => this.handleClickSquare(x, y)} />
         <DamageSelector
           damages={this.state.damages}
           damage={this.state.damage}
