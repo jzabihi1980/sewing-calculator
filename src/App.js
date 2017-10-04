@@ -12,7 +12,7 @@ class App extends Component {
     super();
     this.baseDamages = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
-      damage: 0,
+      damage: 3,
       damages: this.baseDamages,
       skill: 0,
       skills: [
@@ -116,6 +116,68 @@ class App extends Component {
           },
         }
       ],
+      squares: [
+        [
+          {
+            hitpoint: 18,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+          {
+            hitpoint: 20,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+          {
+            hitpoint: 22,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+        ],
+        [
+          {
+            hitpoint: 24,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+          {
+            hitpoint: 26,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+          {
+            hitpoint: 28,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+        ],
+        [
+          {
+            hitpoint: 30,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+          {
+            hitpoint: 32,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+          {
+            hitpoint: 34,
+            defBgCol: '#fff',
+            fgCol: '#222',
+            bgCol: this.defBgCol,
+          },
+        ],
+      ],
       hitpoints: [
         [18, 21, 18],
         [21, 22, 23],
@@ -156,16 +218,44 @@ class App extends Component {
 
     return (
       moveX >= 0 && moveY >= 0 &&
-      moveX < this.state.hitpoints.length &&
-      moveY < this.state.hitpoints[moveX].length
+      moveX < this.state.squares.length &&
+      moveY < this.state.squares[moveX].length
     );
   }
 
-  handleOverSquare(event, x, y) {
-    const bgColor = (this.isValidSquare(x, y)) ? '#88f' : '#f88';
-    event.target.style = {
-      backgroundColor: bgColor,
-    };
+  handleOverSquare(x, y) {
+    if (! this.isValidSquare(x, y)) {
+      return;
+    }
+
+    const squares = this.state.squares.slice(0);
+    const skill = this.state.skills[this.state.skill];
+
+    for (let i = 0; i < skill.move.count; i++) {
+      const moveX = x + (skill.move.x * i);
+      const moveY = y + (skill.move.y * i);
+      squares[moveX][moveY].bgCol = '#bdf';
+    }
+
+    this.setState(
+      {
+        squares: squares,
+      }
+    );
+  }
+
+  handleOutSquare(x, y) {
+    const squares = this.state.squares.slice(0);
+    this.setState(
+      {
+        squares: squares.map((cols) => {
+          return cols.map((square) => {
+            square.bgCol = square.defBgCol;
+            return square;
+          })
+        }),
+      }
+    )
   }
 
   handleClickSquare(x, y) {
@@ -180,12 +270,18 @@ class App extends Component {
       `power: ${this.state.powers[this.state.power].display} ` +
       `skill: ${this.state.skills[this.state.skill].display} ` +
       `damage: ${this.state.damage}`);
-    const hitpoints = this.state.hitpoints.slice(0);
+    const squares = this.state.squares.slice(0);
 
-    hitpoints[x][y] -= this.state.damage;
+    squares[x][y].hitpoint -= this.state.damage;
+
+    squares[x][y].fgCol =
+      (squares[x][y].hitpoint === 0) ? '#292' :
+      (squares[x][y].hitpoint >= -4 && squares[x][y].hitpoint <= 4) ? '#992' :
+      (squares[x][y].hitpoint < -5) ? '#a22' : '#222';
+
     this.setState(
       {
-        hitpoints: hitpoints,
+        squares: squares,
       }
     )
   }
@@ -239,9 +335,10 @@ class App extends Component {
           <h2>Welcome to React</h2>
         </div>
         <Board
-          hitpoints={this.state.hitpoints}
+          squares={this.state.squares}
           onClick={(x, y) => this.handleClickSquare(x, y)} 
-          onMouseOver={(event, x, y) => this.handleOverSquare(event, x, y)} />
+          onMouseOver={(x, y) => this.handleOverSquare(x, y)}
+          onMouseOut={(x, y) => this.handleOutSquare(x, y)} />
         <DamageSelector
           damages={this.state.damages}
           damage={this.state.damage}

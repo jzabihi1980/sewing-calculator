@@ -4,19 +4,19 @@ import React from 'react';
 export default class Board extends React.PureComponent {
 
   renderSquare(x, y) {
-    const hitpoints = this.props.hitpoints.slice(0);
+    const squares = this.props.squares.slice(0);
     const style = {
-      backgroundColor:
-        (hitpoints[x][y] === 0) ? '#8f8':
-        (hitpoints[x][y] <= 4 && hitpoints[x][y] >= -4) ? '#ff8' : '#fff',
+      color: squares[x][y].fgCol,
+      backgroundColor: squares[x][y].bgCol,
     };
 
     return (
       <button
-        value={hitpoints[x][y]}
+        value={squares[x][y].hitpoint}
         style={style}
         onClick={() => this.props.onClick(x, y)}
-        onMouseOver={(event) => this.props.onMouseOver(event, x, y)} >{hitpoints[x][y]}</button>
+        onMouseOver={() => this.props.onMouseOver(x, y)}
+        onMouseOut={() => this.props.onMouseOut(x, y)} >{squares[x][y].hitpoint}</button>
     );
   }
 

@@ -32,10 +32,6 @@
   background-color: #fff;
 }
 
-.board button:hover {
-  border-color: #fbb;
-}
-
 #damage_selector {
   position: absolute;
   display: none;
