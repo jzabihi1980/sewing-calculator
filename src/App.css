@@ -27,9 +27,11 @@
   margin: 1px;
   width: 60px;
   height: 60px;
+  font-family: sans-serif;
+  font-weight: bold;
   font-size: 25px;
   border: solid 1px #888;
-  background-color: #fff;
+  background-color: #f0f0f0;
 }
 
 #damage_selector {
