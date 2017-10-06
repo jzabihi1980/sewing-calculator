@@ -12,6 +12,7 @@ class App extends Component {
     super();
     this.baseDamages = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
+      moves: [],
       damage: 3,
       damages: this.baseDamages,
       skill: 0,
@@ -120,19 +121,19 @@ class App extends Component {
         [
           {
             hitpoint: 18,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
           {
             hitpoint: 20,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
           {
             hitpoint: 22,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
@@ -140,19 +141,19 @@ class App extends Component {
         [
           {
             hitpoint: 24,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
           {
             hitpoint: 26,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
           {
             hitpoint: 28,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
@@ -160,28 +161,23 @@ class App extends Component {
         [
           {
             hitpoint: 30,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
           {
             hitpoint: 32,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
           {
             hitpoint: 34,
-            defBgCol: '#fff',
+            defBgCol: '#f0f0f0',
             fgCol: '#222',
             bgCol: this.defBgCol,
           },
         ],
-      ],
-      hitpoints: [
-        [18, 21, 18],
-        [21, 22, 23],
-        [18, 19, 20],
       ],
       power: 1,
       powers: [
@@ -223,18 +219,29 @@ class App extends Component {
     );
   }
 
+  calculateMoves(x, y) {
+    const skill = this.state.skills[this.state.skill];
+    const moves = [];
+
+    for (let i = 0; i < skill.move.count; i++) {
+      const moveX = x + (skill.move.x * i);
+      const moveY = y + (skill.move.y * i);
+      moves.push({x: moveX, y:moveY});
+    }
+
+    return moves;
+  }
+
   handleOverSquare(x, y) {
     if (! this.isValidSquare(x, y)) {
       return;
     }
 
     const squares = this.state.squares.slice(0);
-    const skill = this.state.skills[this.state.skill];
+    const moves = this.calculateMoves(x, y);
 
-    for (let i = 0; i < skill.move.count; i++) {
-      const moveX = x + (skill.move.x * i);
-      const moveY = y + (skill.move.y * i);
-      squares[moveX][moveY].bgCol = '#bdf';
+    for (let i = 0; i < moves.length; i++) {
+      squares[moves[i].x][moves[i].y].bgCol = '#bdf';
     }
 
     this.setState(
@@ -258,6 +265,29 @@ class App extends Component {
     )
   }
 
+  sewSquare(x, y, damage) {
+    console.log(
+      `pos: ${x}, ${y} ` +
+      `power: ${this.state.powers[this.state.power].display} ` +
+      `skill: ${this.state.skills[this.state.skill].display} ` +
+      `damage: ${damage}`);
+    const squares = this.state.squares.slice(0);
+
+    squares[x][y].hitpoint -= damage;
+
+    squares[x][y].fgCol =
+      (squares[x][y].hitpoint === 0) ? '#0b0' :
+      (squares[x][y].hitpoint >= -4 && squares[x][y].hitpoint <= 4) ? '#c80' :
+      (squares[x][y].hitpoint < -5) ? '#d00' : '#222';
+
+    this.setState(
+      {
+        squares: squares,
+      }
+    )
+ 
+  }
+
   handleClickSquare(x, y) {
     if (!this.isValidSquare(x, y)) {
       console.log(`square position is invalid.`);
@@ -265,6 +295,14 @@ class App extends Component {
     }
     console.log(`square position is valid.`);
 
+    this.setState(
+      {
+        moves: this.calculateMoves(x, y),
+      }
+    );
+
+    document.getElementById('damage_selector').style.display = 'block';
+    /*
     console.log(
       `pos: ${x}, ${y} ` +
       `power: ${this.state.powers[this.state.power].display} ` +
@@ -275,24 +313,33 @@ class App extends Component {
     squares[x][y].hitpoint -= this.state.damage;
 
     squares[x][y].fgCol =
-      (squares[x][y].hitpoint === 0) ? '#292' :
-      (squares[x][y].hitpoint >= -4 && squares[x][y].hitpoint <= 4) ? '#992' :
-      (squares[x][y].hitpoint < -5) ? '#a22' : '#222';
+      (squares[x][y].hitpoint === 0) ? '#0b0' :
+      (squares[x][y].hitpoint >= -4 && squares[x][y].hitpoint <= 4) ? '#c80' :
+      (squares[x][y].hitpoint < -5) ? '#d00' : '#222';
 
     this.setState(
       {
         squares: squares,
       }
     )
+    */
   }
 
   handleChangeDamage(event) {
     console.log(event.target.value);
+    console.log(this.state.moves);
+    const moves = this.state.moves.slice(0);
+    const move = moves.shift();
+
+    this.sewSquare(move.x, move.y, event.target.value);
     this.setState(
       {
+        moves: moves,
         damage: event.target.value,
       }
     );
+
+    document.getElementById('damage_selector').style.display = 'none';
   }
 
   calculateDamages(skillRate, powerRate) {
