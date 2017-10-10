@@ -250,7 +250,7 @@ class App extends Component {
   }
 
   handleEnterSquare(x, y) {
-    if (! this.isValidSquare(x, y)) {
+    if (!this.isValidSquare(x, y)) {
       return;
     }
 
@@ -310,12 +310,12 @@ class App extends Component {
     }, 10);
   }
 
-  handleSelectStitch(event) {
+  handleClickStitch(stitch) {
     const moves = this.state.moves.slice(0);
     const move = moves.shift();
     const stitch_panel = document.getElementById('stitch_panel');
 
-    this.sewSquare(move.x, move.y, event.target.value);
+    this.sewSquare(move.x, move.y, stitch);
     this.setState({moves: moves});
 
     stitch_panel.style.visibility = 'hidden';
@@ -328,11 +328,7 @@ class App extends Component {
       stitch_panel.style.visibility = 'visible';
       setTimeout(() => {
         stitch_panel.style.opacity = 1;
-        this.setState(
-          {
-            stitchCount: this.state.stitchCount + 1,
-          }
-        );
+        this.setState({stitchCount: this.state.stitchCount + 1});
       }, 150);
     }
   }
@@ -370,8 +366,7 @@ class App extends Component {
           square={this.state.squares[this.state.moves[0].x][this.state.moves[0].y]}
           skill={this.state.skills[this.state.skill]}
           power={this.state.powers[this.state.power]}
-          onSelectStitch={(event) => this.handleSelectStitch(event)}
-          onToggleCritical={(event) => this.handleToggleCritical(event)} />
+          onClickStitch={(stitch) => this.handleClickStitch(stitch)} />
       </div>
     );
   }

@@ -54,11 +54,15 @@ export default class StitchPanel extends React.Component {
 
   handleClickStitch(event) {
     this.setState({isCritical: false});
-    this.props.onSelectStitch(event);
+    this.props.onClickStitch(event.target.value);
   }
 
   handleClickCritical() {
-    this.setState({isCritical: !this.state.isCritical});
+    if (this.state.square.hitpoint <= this.stitches[0] * 2) {
+      this.props.onClickStitch(this.state.square.hitpoint);
+    } else {
+      this.setState({isCritical: !this.state.isCritical});
+    }
   }
 
   componentWillReceiveProps(nextProps) {
