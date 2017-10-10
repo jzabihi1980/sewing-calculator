@@ -5,6 +5,7 @@ export default class Board extends React.PureComponent {
 
   renderSquare(x, y) {
     const squares = this.props.squares.slice(0);
+    const id=`square${x}${y}`
     const style = {
       color: squares[x][y].fgCol,
       backgroundColor: squares[x][y].bgCol,
@@ -12,10 +13,11 @@ export default class Board extends React.PureComponent {
 
     return (
       <button
+        id={id}
         value={squares[x][y].hitpoint}
         style={style}
         onClick={() => this.props.onClick(x, y)}
-        onMouseOver={() => this.props.onMouseOver(x, y)}
+        onMouseEnter={() => this.props.onMouseEnter(x, y)}
         onMouseOut={() => this.props.onMouseOut(x, y)} >{squares[x][y].hitpoint}</button>
     );
   }

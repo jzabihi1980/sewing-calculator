@@ -1,4 +1,5 @@
 .App {
+  position: relative;
   text-align: center;
 }
 
@@ -34,7 +35,70 @@
   background-color: #f0f0f0;
 }
 
-#damage_selector {
-  position: absolute;
+#stitch_panel {
   display: none;
+  position: absolute;
+  top: 200px;
+  left: 0;
+  right: 0;
+  bottom: auto;
+  margin: 0 auto;
+  width: 300px;
+  padding: 10px 0;
+  text-align: center;
+  background-color: #fff;
+  border: solid 3px #aaa;
+  border-radius: 10px;
+  visibility: hidden;
+  opacity: 0;
+  transition-duration: 150ms;
+  -moz-transition-duration: 150ms;
+  -webkit-transition-duration: 150ms;
+  -o-transition-duration: 150ms;
+}
+
+#stitch_indicator {
+  font-family: sans-serif;
+  font-size: 30px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#stitch_selector {
+  margin: 0 auto;
+  width: 90%;
+  border: solid 1px #aaa;
+  overflow-y: auto;
+}
+
+.stitch_choice {
+  width: 100%;
+  height: 30px;
+  display: block;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  border: none;
+  background-color: #fff;
+}
+
+.stitch_choice:hover {
+  background-color: #9bf;
+}
+
+#critical_switch {
+  margin: 20px 0 10px 0;
+  width: 90%;
+  height: 50px;
+  font-family: sans-serif;
+  font-size: 20px;
+  font-weight: normal;
+  text-align: center;
+  background-color: #fff;
+  border: solid 1px #aaa;
+  border-radius: 5px;
+}
+
+#critical_switch:hover {
+  background-color: #fa9;
 }

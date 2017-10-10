@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Board from './board';
-import DamageSelector from './damage_selector';
+import StitchPanel from './stitch_panel';
 import SkillSelector from './skill_selector';
 import PowerSelector from './power_selector';
 
@@ -10,11 +10,11 @@ class App extends Component {
 
   constructor() {
     super();
-    this.baseDamages = [12, 13, 14, 15, 16, 17, 18];
+    this.baseStitches = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
       moves: [],
-      damage: 3,
-      damages: this.baseDamages,
+      stitchCount: 0,
+      stitches: this.baseStitches,
       skill: 0,
       skills: [
         {
@@ -232,7 +232,7 @@ class App extends Component {
     return moves;
   }
 
-  handleOverSquare(x, y) {
+  handleEnterSquare(x, y) {
     if (! this.isValidSquare(x, y)) {
       return;
     }
@@ -265,15 +265,15 @@ class App extends Component {
     )
   }
 
-  sewSquare(x, y, damage) {
+  sewSquare(x, y, stitch) {
     console.log(
       `pos: ${x}, ${y} ` +
       `power: ${this.state.powers[this.state.power].display} ` +
       `skill: ${this.state.skills[this.state.skill].display} ` +
-      `damage: ${damage}`);
+      `stitch: ${stitch}`);
     const squares = this.state.squares.slice(0);
 
-    squares[x][y].hitpoint -= damage;
+    squares[x][y].hitpoint -= stitch;
 
     squares[x][y].fgCol =
       (squares[x][y].hitpoint === 0) ? '#0b0' :
@@ -295,59 +295,60 @@ class App extends Component {
     }
     console.log(`square position is valid.`);
 
+    const stitch_panel = document.getElementById('stitch_panel');
     this.setState(
       {
         moves: this.calculateMoves(x, y),
+        stitchCount: 1,
       }
     );
 
-    document.getElementById('damage_selector').style.display = 'block';
-    /*
-    console.log(
-      `pos: ${x}, ${y} ` +
-      `power: ${this.state.powers[this.state.power].display} ` +
-      `skill: ${this.state.skills[this.state.skill].display} ` +
-      `damage: ${this.state.damage}`);
-    const squares = this.state.squares.slice(0);
-
-    squares[x][y].hitpoint -= this.state.damage;
-
-    squares[x][y].fgCol =
-      (squares[x][y].hitpoint === 0) ? '#0b0' :
-      (squares[x][y].hitpoint >= -4 && squares[x][y].hitpoint <= 4) ? '#c80' :
-      (squares[x][y].hitpoint < -5) ? '#d00' : '#222';
-
-    this.setState(
-      {
-        squares: squares,
-      }
-    )
-    */
+    stitch_panel.style.display = 'block';
+    stitch_panel.style.visibility= 'visible';
+    setTimeout( () => {
+      stitch_panel.style.opacity = 1;
+    }, 10);
   }
 
-  handleChangeDamage(event) {
-    console.log(event.target.value);
-    console.log(this.state.moves);
+  handleSelectStitch(event) {
     const moves = this.state.moves.slice(0);
     const move = moves.shift();
+    const stitch_panel = document.getElementById('stitch_panel');
 
     this.sewSquare(move.x, move.y, event.target.value);
     this.setState(
       {
         moves: moves,
-        damage: event.target.value,
       }
     );
 
-    document.getElementById('damage_selector').style.display = 'none';
+    stitch_panel.style.visibility = 'hidden';
+    stitch_panel.style.opacity = 0;
+
+    if (moves.length === 0) {
+      stitch_panel.style.display = 'none';
+    } else {
+      stitch_panel.style.visibility = 'visible';
+      setTimeout(() => {
+        stitch_panel.style.opacity = 1;
+        this.setState(
+          {
+            stitchCount: this.state.stitchCount + 1,
+          }
+        );
+      }, 150);
+    }
   }
 
-  calculateDamages(skillRate, powerRate) {
+  handleToggleCritical(event) {
+  }
+
+  calculateStitches(skillRate, powerRate) {
     return (
-      this.baseDamages.map(
-        (damage) => Math.ceil(damage * skillRate * powerRate)
+      this.baseStitches.map(
+        (stitch) => Math.ceil(stitch * skillRate * powerRate)
       ).filter(
-      (v, i, self) => self.indexOf(v) === i
+        (v, i, self) => self.indexOf(v) === i
       )
     );
   }
@@ -356,7 +357,7 @@ class App extends Component {
     this.setState(
       {
         skill: Number.parseInt(event.target.value, 10),
-        damages: this.calculateDamages(
+        stitches: this.calculateStitches(
           this.state.skills[event.target.value].rate,
           this.state.powers[this.state.power].rate),
       }
@@ -367,7 +368,7 @@ class App extends Component {
     this.setState(
       {
         power: event.target.value,
-        damages: this.calculateDamages(
+        stitches: this.calculateStitches(
           this.state.skills[this.state.skill].rate,
           this.state.powers[event.target.value].rate),
       }
@@ -384,12 +385,8 @@ class App extends Component {
         <Board
           squares={this.state.squares}
           onClick={(x, y) => this.handleClickSquare(x, y)} 
-          onMouseOver={(x, y) => this.handleOverSquare(x, y)}
+          onMouseEnter={(x, y) => this.handleEnterSquare(x, y)}
           onMouseOut={(x, y) => this.handleOutSquare(x, y)} />
-        <DamageSelector
-          damages={this.state.damages}
-          damage={this.state.damage}
-          onChange={(event) => this.handleChangeDamage(event)} />
         <SkillSelector
           skills={this.state.skills}
           skill={this.state.skill}
@@ -398,6 +395,11 @@ class App extends Component {
           powers={this.state.powers}
           power={this.state.power}
           onChange={(event) => this.handleChangePower(event)} />
+        <StitchPanel
+          stitches={this.state.stitches}
+          stitchCount={this.state.stitchCount}
+          onSelectStitch={(event) => this.handleSelectStitch(event)}
+          onToggleCritical={(event) => this.handleToggleCritical(event)} />
       </div>
     );
   }
