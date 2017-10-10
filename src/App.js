@@ -10,11 +10,9 @@ class App extends Component {
 
   constructor() {
     super();
-    this.baseStitches = [12, 13, 14, 15, 16, 17, 18];
     this.state = {
-      moves: [],
+      moves: [{x: 0, y: 0}],
       stitchCount: 0,
-      stitches: this.baseStitches,
       skill: 0,
       skills: [
         {
@@ -25,6 +23,7 @@ class App extends Component {
             y: 0,
             count: 1,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '滝', 
@@ -34,6 +33,7 @@ class App extends Component {
             y: 1,
             count: 2,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '横',
@@ -43,6 +43,7 @@ class App extends Component {
             y: 0,
             count: 2,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '大滝',
@@ -52,6 +53,7 @@ class App extends Component {
             y: 1,
             count: 3,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '水平',
@@ -61,6 +63,7 @@ class App extends Component {
             y: 0,
             count: 3,
           },
+          isCriticalEnabled: true,
         },
         {
           display: 'たすき',
@@ -70,6 +73,7 @@ class App extends Component {
             y: 1,
             count: 2,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '逆たすき',
@@ -79,6 +83,7 @@ class App extends Component {
             y: 1,
             count: 2,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '2倍',
@@ -88,6 +93,7 @@ class App extends Component {
             y: 0,
             count: 1,
           },
+          isCriticalEnabled: true,
         },
         {
           display: '3倍',
@@ -97,6 +103,7 @@ class App extends Component {
             y: 0,
             count: 1,
           },
+          isCriticalEnabled: true,
         },
         {
           display: 'かげん',
@@ -106,6 +113,7 @@ class App extends Component {
             y: 0,
             count: 1,
           },
+          isCriticalEnabled: true,
         },
         {
           display: 'ほぐし',
@@ -115,6 +123,7 @@ class App extends Component {
             y: 0,
             count: 1,
           },
+          isCriticalEnabled: false,
         }
       ],
       squares: [
@@ -201,6 +210,14 @@ class App extends Component {
     };
   }
 
+  resetState() {
+    this.setState({
+      stitchCount: 0,
+      skill: 0,
+      moves: [{x: 0, y: 0}],
+    })
+  }
+
   isValidSquare(x, y) {
     const skill = this.state.skills[this.state.skill];
 
@@ -244,25 +261,19 @@ class App extends Component {
       squares[moves[i].x][moves[i].y].bgCol = '#bdf';
     }
 
-    this.setState(
-      {
-        squares: squares,
-      }
-    );
+    this.setState({squares: squares});
   }
 
   handleOutSquare(x, y) {
     const squares = this.state.squares.slice(0);
-    this.setState(
-      {
-        squares: squares.map((cols) => {
-          return cols.map((square) => {
-            square.bgCol = square.defBgCol;
-            return square;
-          })
-        }),
-      }
-    )
+    this.setState({
+      squares: squares.map((cols) => {
+        return cols.map((square) => {
+          square.bgCol = square.defBgCol;
+          return square;
+        })
+      }),
+    });
   }
 
   sewSquare(x, y, stitch) {
@@ -271,38 +282,27 @@ class App extends Component {
       `power: ${this.state.powers[this.state.power].display} ` +
       `skill: ${this.state.skills[this.state.skill].display} ` +
       `stitch: ${stitch}`);
+
     const squares = this.state.squares.slice(0);
-
     squares[x][y].hitpoint -= stitch;
-
     squares[x][y].fgCol =
       (squares[x][y].hitpoint === 0) ? '#0b0' :
       (squares[x][y].hitpoint >= -4 && squares[x][y].hitpoint <= 4) ? '#c80' :
       (squares[x][y].hitpoint < -5) ? '#d00' : '#222';
-
-    this.setState(
-      {
-        squares: squares,
-      }
-    )
- 
+    this.setState({squares: squares});
   }
 
   handleClickSquare(x, y) {
     if (!this.isValidSquare(x, y)) {
-      console.log(`square position is invalid.`);
       return;
     }
-    console.log(`square position is valid.`);
+
+    this.setState({
+      moves: this.calculateMoves(x, y),
+      stitchCount: 1,
+    });
 
     const stitch_panel = document.getElementById('stitch_panel');
-    this.setState(
-      {
-        moves: this.calculateMoves(x, y),
-        stitchCount: 1,
-      }
-    );
-
     stitch_panel.style.display = 'block';
     stitch_panel.style.visibility= 'visible';
     setTimeout( () => {
@@ -316,17 +316,14 @@ class App extends Component {
     const stitch_panel = document.getElementById('stitch_panel');
 
     this.sewSquare(move.x, move.y, event.target.value);
-    this.setState(
-      {
-        moves: moves,
-      }
-    );
+    this.setState({moves: moves});
 
     stitch_panel.style.visibility = 'hidden';
     stitch_panel.style.opacity = 0;
 
     if (moves.length === 0) {
       stitch_panel.style.display = 'none';
+      this.resetState();
     } else {
       stitch_panel.style.visibility = 'visible';
       setTimeout(() => {
@@ -340,39 +337,12 @@ class App extends Component {
     }
   }
 
-  handleToggleCritical(event) {
-  }
-
-  calculateStitches(skillRate, powerRate) {
-    return (
-      this.baseStitches.map(
-        (stitch) => Math.ceil(stitch * skillRate * powerRate)
-      ).filter(
-        (v, i, self) => self.indexOf(v) === i
-      )
-    );
-  }
-
   handleChangeSkill(event) {
-    this.setState(
-      {
-        skill: Number.parseInt(event.target.value, 10),
-        stitches: this.calculateStitches(
-          this.state.skills[event.target.value].rate,
-          this.state.powers[this.state.power].rate),
-      }
-    );
+    this.setState({skill: Number.parseInt(event.target.value, 10)});
   }
 
   handleChangePower(event) {
-    this.setState(
-      {
-        power: event.target.value,
-        stitches: this.calculateStitches(
-          this.state.skills[this.state.skill].rate,
-          this.state.powers[event.target.value].rate),
-      }
-    );
+    this.setState({power: event.target.value});
   }
 
   render() {
@@ -396,8 +366,10 @@ class App extends Component {
           power={this.state.power}
           onChange={(event) => this.handleChangePower(event)} />
         <StitchPanel
-          stitches={this.state.stitches}
           stitchCount={this.state.stitchCount}
+          square={this.state.squares[this.state.moves[0].x][this.state.moves[0].y]}
+          skill={this.state.skills[this.state.skill]}
+          power={this.state.powers[this.state.power]}
           onSelectStitch={(event) => this.handleSelectStitch(event)}
           onToggleCritical={(event) => this.handleToggleCritical(event)} />
       </div>

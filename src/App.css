@@ -59,14 +59,32 @@
 
 #stitch_indicator {
   font-family: sans-serif;
-  font-size: 30px;
+  font-size: 20px;
   font-weight: bold;
   text-align: center;
+}
+
+#stitch_indicator #stitch_count {
+  font-size: 200%;
+  color: #c00;
+}
+
+#status_indicator {
+  padding: 0 15px;
+  font-size: 12px;
+}
+
+#status_indicator li {
+  margin-left: 0;
+  margin-right: 15px;
+  display: block;
+  float: left;
 }
 
 #stitch_selector {
   margin: 0 auto;
   width: 90%;
+  max-height: 210px;
   border: solid 1px #aaa;
   overflow-y: auto;
 }
