@@ -13,7 +13,7 @@ class App extends Component {
     this.state = {
       moves: [{x: 0, y: 0}],
       stitchCount: 0,
-      skill: 0,
+      skill: null,
       skills: [
         {
           display: '縫う',
@@ -219,7 +219,7 @@ class App extends Component {
   }
 
   isValidSquare(x, y) {
-    const skill = this.state.skills[this.state.skill];
+    const skill = this.state.skill;
 
     // calculate position that most far square.
     const moveX = x + (skill.move.x * (skill.move.count - 1));
@@ -230,14 +230,15 @@ class App extends Component {
     console.log(`most far X: ${moveX} y: ${moveY}`);
 
     return (
-      moveX >= 0 && moveY >= 0 &&
+      moveX >= 0 &&
+      moveY >= 0 &&
       moveX < this.state.squares.length &&
       moveY < this.state.squares[moveX].length
     );
   }
 
   calculateMoves(x, y) {
-    const skill = this.state.skills[this.state.skill];
+    const skill = this.state.skill;
     const moves = [];
 
     for (let i = 0; i < skill.move.count; i++) {
@@ -280,7 +281,7 @@ class App extends Component {
     console.log(
       `pos: ${x}, ${y} ` +
       `power: ${this.state.powers[this.state.power].display} ` +
-      `skill: ${this.state.skills[this.state.skill].display} ` +
+      `skill: ${this.state.skill.display} ` +
       `stitch: ${stitch}`);
 
     const squares = this.state.squares.slice(0);
@@ -333,8 +334,8 @@ class App extends Component {
     }
   }
 
-  handleChangeSkill(event) {
-    this.setState({skill: Number.parseInt(event.target.value, 10)});
+  handleChangeSkill(skill) {
+    this.setState({skill: skill});
   }
 
   handleChangePower(event) {
@@ -356,7 +357,7 @@ class App extends Component {
         <SkillSelector
           skills={this.state.skills}
           skill={this.state.skill}
-          onChange={(event) => this.handleChangeSkill(event)} />
+          onChange={(skill) => this.handleChangeSkill(skill)} />
         <PowerSelector
           powers={this.state.powers}
           power={this.state.power}
@@ -364,7 +365,7 @@ class App extends Component {
         <StitchPanel
           stitchCount={this.state.stitchCount}
           square={this.state.squares[this.state.moves[0].x][this.state.moves[0].y]}
-          skill={this.state.skills[this.state.skill]}
+          skill={this.state.skill}
           power={this.state.powers[this.state.power]}
           onClickStitch={(stitch) => this.handleClickStitch(stitch)} />
       </div>
